@@ -155,7 +155,7 @@
 	    	%>  
        		<div class="container align-self-center p-6">
                     <h1 class="font-weight-bold mb-3"> Consulta Dictado de Clase</h1>
-                      <form action="AuxcClase" method="post">
+                      <form action="ConsultaDicClass" method="post">
 							<div class="input-group mb-3">
 								<div class="form-row mb-2">
 								<!-- --------------------------- ACA PONE LA DATA------------------------------------ -->
@@ -170,6 +170,7 @@
 									
 								</select> 
 								<input type="submit" value="Enviar" name="enviar">
+								<input id="prodId" name="prodId" type="hidden" value="noup">
 							</div>
 							</form>
 							<%if(request.getAttribute("mostrarAct")=="OK"){ 
@@ -178,7 +179,7 @@
 								<FONT COLOR="white">
 						     		<p>Institucion Seleccionada: <%=request.getAttribute("Institucion")%></p>
 								</FONT>
-								<form action="AuxcClase2" method="post">
+								<form action="ConsultaDicClass" method="post">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
 										<label class="input-group-text" for="inputGroupSelect01">Actividad</label>
@@ -192,15 +193,17 @@
 									</select>
 									<input type="submit"  value="Enviar" name="enviar">
 									<input id="prodId" name="prodId" type="hidden" value="<%=request.getAttribute("Institucion")%>">
+									<input id="prodId" name="prodIdA" type="hidden" value="noup">
+									<input id="prodId" name="envioAct" type="hidden" value="OK">
 								</div>
 								</form>
 								<%if(request.getAttribute("mostrarClas")=="OK"){ 
-									String[] Cl=(String[])request.getAttribute("Clase1");
+									String[] Cl=(String[])request.getAttribute("clases");
 								%>
 									<FONT COLOR="white">
 						     			<p>Actividad Seleccionada: <%=request.getAttribute("Actividad")%></p>
 									</FONT>
-									<form action="AuxcClase3" method="post">
+									<form action="ConsultaDicClass" method="post">
 										<div class="input-group mb-3">
 											<div class="input-group-prepend">
 												<label class="input-group-text" for="inputGroupSelect01">Clase</label>
@@ -214,7 +217,8 @@
 											</select>
 											<input type="submit"  value="Enviar" name="enviar">
 											<input id="prodId" name="prodId" type="hidden" value="<%=request.getAttribute("Institucion")%>">
-											<input id="prodId2" name="prodId2" type="hidden" value="<%=request.getAttribute("Actividad")%>">
+										<input id="prodId" name="prodIdA" type="hidden" value="<%=request.getAttribute("Actividad")%>">
+										<input id="prodId" name="envioCl" type="hidden" value="OK">
 										</div>
 									</form>
 										
