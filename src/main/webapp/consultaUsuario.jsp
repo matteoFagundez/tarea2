@@ -1,6 +1,8 @@
 <%@page import="datatypes.DtSocio"%>
 <%@page import="datatypes.DtProfesor"%>
 <%@page import="datatypes.DtUsuario"%>
+<%@page import="datatypes.DtClase"%>
+<%@page import="datatypes.DtActDeportiva"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
  <%@page import="java.io.ByteArrayInputStream"%>
@@ -32,8 +34,27 @@
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet" href="css/style2.css">
         <link rel="stylesheet" href="css/style3.css">
-
-        
+		<script>
+		        function validacion(){
+		            var formvalido = true;
+		
+		
+		            <%String n,d,du,c2,f,i,t;n=(String) request.getAttribute("Clase");d=(String) request.getAttribute("Fecha");
+		            du=(String) request.getAttribute("HoraI");c2=(String) request.getAttribute("Url");f=(String) request.getAttribute("FechaR");
+		            i=(String) request.getAttribute("Imagen");t=(String)request.getAttribute("Titulo");%>
+		            Swal.fire({
+		            	title: '<%=t%>',
+		            	html:' <b><%=n%></b><br><b><%=d%></b><br><b><%=du%></b><br><b><%=c2%></b><br><b><%=f%></b>',
+		            	icon:'info',
+		            	backdrop: true,
+		            	imageUrl: '<%=i%>',
+		            	imageWidth: '400px',
+		            });
+		
+		            return formvalido;
+		
+		        }
+		    </script>     
     </head>
     </head>
     <body>
@@ -176,20 +197,203 @@
 								</p>
 				                </FONT>			               
                             <%} %>
+                <%if(request.getAttribute("mostrarTablas")=="OK"){%>
+	                <FONT COLOR="white"><h2 class="font-weight-bold mb-3"> Clases Asociadas</h2>
+							<!-- ACA PONE LA DATA -->
+                            <table class="table">
+										<thead>
+											<tr>
+												<th>CLASE</th>
+										    	<th>FECHA</th>
+										    	<th>HORA DE INICIO</th>
+										    	<th>URL</th>
+										    	<th>FECHA DE REGUISTRO</th>
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											ArrayList<DtClase> clase = (ArrayList<DtClase>) request.getAttribute("clase"); 
+											if (clase != null) {
+													for (DtClase c : clase) {
+											%>
+											<tr>
+												<th><%=c.getNombre()%></th>
+												<td><%=c.getFecha().getDate()%>/<%=(c.getFecha().getMonth()+1)%>/<%=(c.getFecha().getYear()+1900)%></td>
+												<%
+												String horaI;
+												if(c.getHoraInicio().getMinutes()<=9) {
+													horaI=String.valueOf(c.getHoraInicio().getHours() + ":0" +c.getHoraInicio().getMinutes());
+												}
+												else {
+													horaI=String.valueOf(c.getHoraInicio().getHours() + ":" +c.getHoraInicio().getMinutes());
+												}
+												%>
+												<td>
+												 <%=horaI%>
+												</td>
+												<td><%=c.getUrl()%></td>
+												<%
+												String horaR;
+												if(c.getFechaReg().getMinutes()<=9) {
+													horaR=String.valueOf(c.getFechaReg().getHours() + ":0" +c.getFechaReg().getMinutes());
+												}
+												else {
+													horaR=String.valueOf(c.getFechaReg().getHours() + ":" +c.getFechaReg().getMinutes());
+												}
+												%>
+												<td>
+													<%=c.getFechaReg().getDate()%>/<%=(c.getFechaReg().getMonth()+1)%>/<%=(c.getFechaReg().getYear()+1900)%><%=" "+horaR%>
+												</td>
+														
+		
+											</tr>
+											<%
+												}
+											}
+											else{ 
+												%>
+											<tr>
+												<th><li>vacio</li></th>
+												<td><li>vacio</li></td>
+												<td><li>vacio</li></td>
+												<td><li>vacio</li></td>
+												<td><li>vacio</li></td>
+									
+											
+											</tr>
+											<%
+											}
+											%>
+										</tbody>
+									</table>
+								</FONT>
+								
                 </div>
+                <form action="ConsultaUser" method="post">
+
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<label class="input-group-text" for="inputGroupSelect01">Clase</label>
+									</div>
+									<select class="custom-select" id="selectclase" name="selectclase" required>
+										<%
+										if(clase != null){%>
+										<option value="select">Seleccione Clase</option>
+										<%
+										for(DtClase ca : clase){%>
+											<option value="<%=ca.getNombre()%>"><%=ca.getNombre()%></option>
+										<%}}%>
+									</select>
+									<input type="submit" value="Enviar" name="enviar">
+									<input id="prodId" name="MostrarDatos" type="hidden" value="OK">
+								</div>
+								
+				</form>
+  				 <%if(use instanceof DtProfesor){
+						ArrayList<DtActDeportiva> actDepo = (ArrayList<DtActDeportiva>) request.getAttribute("actD");       		
+				%>   
+  				<h2 class="font-weight-bold mb-3">Actividades Deportivas Asociadas</h2>
+							<FONT COLOR="white"><!-- ACA PONE LA DATA -->
+								
+									<table class="table">
+										<thead>
+											<tr>
+												
+											    <th>NOMBRE</th>
+											    <th>DESCRIPCION</th>
+											    <th>DURACION</th>
+											    <th>COSTO</th>
+											    <th>FECHA DE REGUISTRO</th>
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											if (actDepo != null) {
+													for (DtActDeportiva dta : actDepo) {
+											%>
+											<tr>
+												
+												<td><%=dta.getNombre()%></td>
+												<td><%=dta.getDescripcion()%></td>
+												<td><%=	String.valueOf(dta.getDuracion()+" min")%></td>
+												<td><%=	String.valueOf(dta.getCosto()+"$")%></td>
+												<%
+												String horaRa;
+												if(dta.getFecha().getMinutes()<=9) {
+													horaRa=String.valueOf(dta.getFecha().getHours() + ":0" +dta.getFecha().getMinutes());
+												}
+												else {
+													horaRa=String.valueOf(dta.getFecha().getHours() + ":" +dta.getFecha().getMinutes());
+												}
+												%>
+												<th><%=dta.getFecha().getDate()%>/<%=(dta.getFecha().getMonth()+1)%>/<%=(dta.getFecha().getYear()+1900)%><%=" "+horaRa%></th>
+														
+		
+											</tr>
+											<%
+												}
+											}
+											else{ 
+												%>
+											<tr>
+												<th><li>vacio</li></th>
+												<td><li>vacio</li></td>
+												<td><li>vacio</li></td>
+												<td><li>vacio</li></td>
+												<td><li>vacio</li></td>
+											
+											</tr>
+											<%
+											}
+											%>
+										</tbody>
+									</table>
+									</FONT>
+									<form action="ConsultaUser" method="post">
+
+									<div class="input-group mb-3">
+										<div class="input-group-prepend">
+											<label class="input-group-text" for="inputGroupSelect01">Actividad</label>
+										</div>
+										<select class="custom-select" id="selectAct" name="selectAct" required>
+											<%
+											if(actDepo != null){%>
+												<option value="select">Seleccione Actividad</option>
+												<%for(DtActDeportiva ca : actDepo){%>
+												<option value="<%=ca.getNombre()%>"><%=ca.getNombre()%></option>
+											<%}}%>
+										</select>
+										<input type="submit" value="Enviar" name="enviar">
+										<input id="prodId" name="MostrarDatos" type="hidden" value="OK">
+									</div>
+												
+								</form>
+							<%} %>
                 
-                <%if(use instanceof DtProfesor){%>
-            	<form action="ConsultaListadoUsuario" method="post">
-			            <button class="btn btn-primary width-100">Ver Actividades y Clases</button>
-				</form>
-                <%} else{%>
-                <form action="ConsultaListadoUsuario" method="post">    
-			         <button class="btn btn-primary width-100"> Ver Actividades</button>			        
-				</form>
-                <%} %>
+	               
+	               <%if(request.getAttribute("Datos")=="OK"){  %>
+	                <script>  
+	                	validacion();   
+	                </script>
+	                </div>
 
-     	 </div>
+               	  <%} %>
+	             <%}else{ %>
+	             	</div>
+	             	<%if(use instanceof DtProfesor){%>
+	            	<form action="ConsultaUser" method="post">
+				            <button class="btn btn-primary width-100">Ver Actividades y Clases</button>
+					</form>
+	                <%} else{%>
+	                <form action="ConsultaUser" method="post">    
+				         <button class="btn btn-primary width-100"> Ver Actividades</button>			        
+					</form>
+					
+	                <%} %>
+	             <%} %>
+	             
 
+     	 
      </div>
 
     <!-- Optional JavaScript -->
